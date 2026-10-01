@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz Eleições 2026: com quem você mais combina?</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#F3F5F7;--card:#fff;--ink:#16202B;--mut:#5B6773;--line:#D5DBE1;--ac:#1D5FA8;--sel:#E8EEF5;--tip:#FFF6DD;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10161D;--card:#18212B;--ink:#E8EDF2;--mut:#9AA6B2;--line:#2C3947;--ac:#6FA8E8;--sel:#223142;--tip:#2F2A18}}
+:root[data-theme="dark"]{--bg:#10161D;--card:#18212B;--ink:#E8EDF2;--mut:#9AA6B2;--line:#2C3947;--ac:#6FA8E8;--sel:#223142;--tip:#2F2A18}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Public Sans",system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.7rem;line-height:1.2;margin:8px 0 6px;font-weight:800}
+.lead,.note{color:var(--mut)}.note{font-size:.82rem}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.top span{font-size:.9rem;color:var(--mut);font-weight:600}
+.q p{margin:8px 0 10px;font-weight:600;font-size:1.05rem}
+.hb{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ac);background:transparent;color:var(--ac);font-weight:800;padding:0;cursor:pointer;flex:none}
+.hb[aria-expanded="true"]{background:var(--ac);color:var(--card)}
+.tip{display:none;background:var(--tip);border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:.9rem}
+.tip.on{display:block}.tip b{display:block;margin-top:6px}.tip b:first-child{margin-top:0}
+label.o{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;cursor:pointer}
+label.o:has(input:checked){background:var(--sel);border-color:var(--ink)}
+label.o input{margin-top:4px}
+.w{font-size:.85rem;color:var(--mut);display:flex;gap:8px;align-items:center;margin-top:4px}
+button.b{font:inherit;font-weight:600;background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:12px 20px;cursor:pointer;margin:0 8px 8px 0}
+button.s{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+#res{display:none;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0}
+.r{margin-bottom:12px}.r div:first-child{display:flex;justify-content:space-between;font-weight:600}
+.bar{height:14px;border-radius:5px;background:var(--line);overflow:hidden;margin:3px 0}
+.bar i{display:block;height:100%;background:var(--ac)}
+.r small{color:var(--mut)}
+</style>
+</head>
+<body>
+<main>
+<h1>Quiz Eleições 2026: com quem você mais combina?</h1>
+<p class="lead">Escolha, em cada tema, a opção que mais combina com você. O nome dos candidatos só aparece no resultado. Em dúvida? Toque no <b>?</b> para entender os termos e o que cada opção significa.</p>
+<div id="qs"></div>
+<button class="b" id="go">Ver resultado</button><button class="b s" id="rs">Limpar</button><button class="b s" id="sh">Compartilhar</button>
+<div id="res" aria-live="polite"></div>
+<p class="note">Feito a partir dos planos de governo registrados no TSE, de reportagens e de resumos de vídeos (levantamento de 29/09/2026). É um apoio à reflexão, não uma recomendação de voto. Candidato sem proposta localizada em um tema não pontua nele, o que não quer dizer que seja contra. Leonardo Avalanche (PRTB) não entrou por falta de plano detalhado. Confira os planos completos no site do TSE.</p>
+</main>
+<script>
+var N={L:"Lula (PT)",F:"Flávio Bolsonaro (PL)",Z:"Romeu Zema (Novo)",C:"Ronaldo Caiado (PSD)",R:"Renan Santos (Missão)",U:"Augusto Cury (Avante)",S:"Samara Martins (UP)",H:"Hertz Dias (PSTU)",E:"Edmilson Costa (PCB)",P:"Rui Costa Pimenta (PCO)",G:"Wilson Grassi (Democrata)",D:"Clariana Barão (DC)"};
+// cada opção: [texto, candidatos que a defendem]
+var Q=[
+{t:"Saúde",p:"Qual o melhor caminho para a saúde?",h:"<b>SUS</b>O sistema público e gratuito. Fortalecê-lo significa mais recursos e rede própria (hospitais e postos).<b>Parcerias com o privado</b>Concessões, organizações sociais (entidades privadas que gerenciam unidades públicas) e uso de horários ociosos de serviços particulares.<b>Tecnologia</b>Prontuário único e inteligência artificial para organizar filas.<b>Estatizar</b>O governo assumir hospitais e planos privados.",o:[["Fortalecer o SUS público, com mais recursos e rede própria","LCSPG"],["Ampliar parcerias com o setor privado","FZ"],["Apostar em tecnologia e IA para zerar filas","RD"],["Estatizar a saúde privada","E"],["Priorizar a saúde mental","U"]]},
+{t:"Educação",p:"Qual deve ser a prioridade na educação?",h:"<b>Cívico-militar</b>Escola pública com gestão e disciplina inspiradas no modelo militar.<b>Voucher</b>O governo paga a vaga em escola particular onde faltar vaga pública.<b>Ensino domiciliar</b>A família educa em casa.<b>Alfabetização na idade certa</b>Meta de a criança ler até o 2º ano.<b>Tempo integral</b>Dia escolar mais longo, com reforço e atividades.",o:[["Alfabetização na idade certa, creches, tempo integral e ensino técnico","LCU"],["Escolas cívico-militares, vouchers e ensino domiciliar","FZ"],["Mais verba pública, ensino superior sem vestibular e fim da educação privada","SPE"]]},
+{t:"Segurança",p:"Qual abordagem de segurança você prefere?",h:"<b>Maioridade penal</b>Idade a partir da qual a pessoa responde como adulto (hoje 18).<b>Facção como terrorista</b>Muda o enquadramento legal e as penas e permite ações mais duras. Há debate sobre os efeitos.<b>Câmeras corporais</b>Registram abordagens policiais.<b>Asfixia financeira</b>Bloquear dinheiro e bens do crime organizado.<b>Segurança comunitária</b>Forças organizadas pela população dos bairros.",o:[["Integrar polícias e governos, com câmeras corporais e controle de armas","LU"],["Linha dura: facções como terroristas, maioridade penal menor e mais presídios","FZCR"],["Asfixiar o dinheiro do crime e vigiar fronteiras com tecnologia","GD"],["Segurança organizada pela própria comunidade","P"]]},
+{t:"Privatizações",p:"O que fazer com as empresas estatais?",h:"<b>Estatais</b>Empresas controladas pelo governo, como Petrobras, Correios e bancos públicos.<b>Privatizar</b>Gera receita e reduz o Estado, mas pode afetar preços e serviços estratégicos.<b>Pré-sal</b>Reservas de petróleo em águas profundas. Caiado quer vender parte da Petrobras e manter o pré-sal estatal.<b>Reestatizar</b>O governo retoma empresas já vendidas.",o:[["Privatizar amplamente, todas ou quase todas","ZRF"],["Privatizar só em parte, preservando o essencial, e ampliar concessões","CD"],["Ampliar o controle estatal: reestatizar empresas e estatizar bancos","SHEP"],["Manter as estatais atuais, sem nova onda de privatizações","L"]]},
+{t:"Trabalho",p:"O que mudar nas regras de trabalho?",h:"<b>CLT</b>Conjunto de direitos como férias, 13º e FGTS.<b>Flexibilizar</b>Permitir pagamento por hora ou por desempenho e outros arranjos. Críticos apontam perda de proteção.<b>Escala 6x1</b>Seis dias de trabalho para um de folga. A proposta é reduzir (fim da 6x1 ou 4x3) sem cortar salário. Críticos apontam custo para empresas.<b>Contribuição patronal</b>Encargo pago pelo empregador sobre a folha.",o:[["Flexibilizar a CLT (pagamento por hora, modelos variáveis)","FZR"],["Reduzir a jornada sem cortar salário (fim da 6x1 ou 4x3)","LH"],["Acabar com a contribuição patronal e simplificar a tributação do trabalho","G"]]},
+{t:"Economia",p:"Qual a sua visão sobre gastos e impostos?",h:"<b>Arcabouço fiscal</b>Regra que limita o crescimento dos gastos do governo.<b>Choque fiscal</b>Corte rápido e forte de despesas.<b>Teto de gastos</b>Limite constitucional de gastos, que algumas candidaturas querem derrubar.<b>Auditar a dívida</b>Revisar se os débitos públicos são legítimos.<b>Imposto único</b>Um só tributo, no caso sobre movimentação financeira.",o:[["Choque fiscal, corte de gastos e Estado menor","FZR"],["Equilíbrio fiscal com regras, zerar o déficit e juros menores","LCU"],["Romper com o teto de gastos, auditar ou suspender a dívida e taxar grandes fortunas","SHEP"],["Simplificar impostos e facilitar a abertura de empresas","GD"]]},
+{t:"STF",p:"O que mudar no Supremo Tribunal Federal?",h:"<b>Situação atual</b>Ministros não têm mandato e ficam até os 75 anos.<b>Decisão monocrática</b>Tomada por um único ministro, sem votação do plenário.<b>Quarentena</b>Caiado propõe 4 anos sem advogar e 8 sem atividade política após sair, para evitar uso do cargo como trampolim ou captura por interesses futuros.<b>Como mudar</b>Qualquer alteração exige emenda constitucional aprovada no Congresso.",o:[["Mandato com prazo e idade mínima para os ministros","CZU"],["Limitar decisões individuais e reduzir as competências do tribunal","FZR"]]},
+{t:"Estado e foco",p:"Onde o governo deve concentrar esforços?",h:"<b>Máquina pública</b>Ministérios, cargos comissionados e municípios. Cortar reduz custos, mas pode afetar serviços. Renan propõe reduzir os municípios de 5.570 para cerca de 1.656.<b>Agenda regional</b>Caiado propõe o Pacto Nordeste 2030 e foco na Amazônia, no agro e na mineração.<b>Inclusão</b>Cury foca em neurodiversidade e empreendedorismo.",o:[["Reduzir a máquina pública: menos ministérios, cargos e municípios","FZR"],["Planos regionais e setoriais, como Nordeste, Amazônia, agro e mineração","C"],["Inclusão, neurodiversidade e empreendedorismo","U"]]}
+];
+var qs=document.getElementById("qs");
+Q.forEach(function(q,i){
+ var h='<div class="q"><div class="top"><span>'+(i+1)+' de '+Q.length+' · '+q.t+'</span><button class="hb" aria-expanded="false" aria-controls="t'+i+'" aria-label="Dica sobre este tema" data-i="'+i+'">?</button></div><p>'+q.p+'</p><div class="tip" id="t'+i+'">'+q.h+'</div>';
+ q.o.forEach(function(o,j){h+='<label class="o"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+o[0]+'</span></label>';});
+ h+='<label class="o"><input type="radio" name="q'+i+'" value="n"><span>Nenhuma / indiferente</span></label><label class="w"><input type="checkbox" id="w'+i+'"> Este tema pesa em dobro para mim</label></div>';
+ qs.insertAdjacentHTML("beforeend",h);
+});
+qs.addEventListener("click",function(e){var b=e.target.closest(".hb");if(!b)return;var t=document.getElementById("t"+b.dataset.i),on=t.classList.toggle("on");b.setAttribute("aria-expanded",on);});
+var res=document.getElementById("res");
+document.getElementById("go").onclick=function(){
+ var s={},m={},tot=0,n=0;Object.keys(N).forEach(function(k){s[k]=0;m[k]=[];});
+ Q.forEach(function(q,i){
+  var r=document.querySelector('input[name="q'+i+'"]:checked');if(!r)return;n++;
+  var w=document.getElementById("w"+i).checked?2:1;tot+=w;
+  if(r.value!=="n"){q.o[+r.value][1].split("").forEach(function(k){s[k]+=w;m[k].push(q.t);});}
+ });
+ res.style.display="block";
+ if(n<Q.length){res.textContent="Faltam "+(Q.length-n)+" resposta(s). Responda todas os temas para ver o resultado.";return;}
+ var ks=Object.keys(N).sort(function(a,b){return s[b]-s[a];}),h='<h2 style="margin-top:0">Seu resultado</h2><p class="note">Afinidade = pontos obtidos sobre o total possível. Os pontos vêm só das propostas localizadas.</p>';
+ ks.forEach(function(k){var p=tot?Math.round(s[k]/tot*100):0;
+  h+='<div class="r"><div><span>'+N[k]+'</span><span>'+p+'%</span></div><div class="bar"><i style="width:'+p+'%"></i></div><small>'+(m[k].length?"Coincidiu em: "+m[k].join(", "):"Nenhuma coincidência")+'</small></div>';});
+ res.innerHTML=h;res.scrollIntoView({behavior:"smooth"});
+};
+document.getElementById("rs").onclick=function(){document.querySelectorAll("input").forEach(function(i){i.checked=false;});document.querySelectorAll(".tip").forEach(function(t){t.classList.remove("on");});res.style.display="none";window.scrollTo(0,0);};
+document.getElementById("sh").onclick=function(){
+ var u=location.href,d={title:document.title,url:u};
+ try{if(navigator.share){navigator.share(d);return;}}catch(e){}
+ try{navigator.clipboard.writeText(u).then(function(){alert("Link copiado!");});}catch(e){prompt("Copie o link:",u);}
+};
+</script>
+</body>
+</html>
